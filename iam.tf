@@ -57,6 +57,44 @@ resource "aws_iam_role_policy" "SnsToDynamoDBWriting" {
   })
 }
 
+# Allow API Gateway to call Lambda
+resource "aws_lambda_permission" "WeatherAPI" {
+  statement_id = "AllowAPIGatewayInvoke"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.WeatherAPI.function_name
+  principal = "apigateway.amazonaws.com"
+  source_arn = "${aws_api_gateway_rest_api.WeatherAPI.execution_arn}/*/*"
+}
+
+# Lambda function for API
+resource "aws_iam_role" "WeatherAPI" {
+  name = "WeatherAPI"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "WeatherAPIPolicyAttach" {
+  role = aws_iam_role.WeatherAPI.name
+  policy_arn = data.aws_iam_policy.AWSLambdaBasicExecutionRole.arn
+}
+
+resource "aws_iam_role_policy_attachment" "WeatherAPILambdaS3Access" {
+  role = aws_iam_role.WeatherAPI.name
+  policy_arn = aws_iam_policy.LambdaS3Access.arn
+}
+
 # Allow Lambda to download functions from S3
 resource "aws_iam_policy" "LambdaS3Access" {
   name = "LambdaS3Access"
