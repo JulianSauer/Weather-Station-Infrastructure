@@ -95,6 +95,23 @@ resource "aws_iam_role_policy_attachment" "WeatherAPILambdaS3Access" {
   policy_arn = aws_iam_policy.LambdaS3Access.arn
 }
 
+resource "aws_iam_role_policy" "WeatherAPIDBReading" {
+  name = "WeatherAPIDBReading"
+  role = aws_iam_role.WeatherAPI.id
+
+  policy = jsonencode({
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Sid: "VisualEditor0",
+        Effect: "Allow",
+        Action: "dynamodb:Query",
+        Resource: aws_dynamodb_table.WeatherStation.arn
+      }
+    ]
+  })
+}
+
 # Allow Lambda to download functions from S3
 resource "aws_iam_policy" "LambdaS3Access" {
   name = "LambdaS3Access"
