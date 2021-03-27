@@ -15,14 +15,14 @@ provider "aws" {
 # DynamoDB
 resource "aws_dynamodb_table" "WeatherStation" {
   name = "WeatherStation"
-  hash_key = "messageId"
+  hash_key = "source"
   range_key = "timestamp"
   billing_mode = "PROVISIONED"
   read_capacity = 1
   write_capacity = 1
 
   attribute {
-    name = "messageId"
+    name = "source"
     type = "S"
   }
   attribute {
