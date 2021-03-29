@@ -141,3 +141,47 @@ resource "aws_iam_policy" "LambdaS3Access" {
 resource "aws_iam_user" "UploadToS3" {
   name = "UploadToS3"
 }
+
+# Make website public
+data "aws_iam_policy_document" "WeatherStationUI" {
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    principals {
+      identifiers = ["*"]
+      type = "AWS"
+    }
+    resources = [
+      "arn:aws:s3:::weather.julian-sauer.com/*"
+    ]
+  }
+}
+
+# User for uploading the website
+resource "aws_iam_user" "SyncWeatherStationUI" {
+  name = "SyncWeatherStationUI"
+}
+
+resource "aws_iam_user_policy_attachment" "SyncWeatherStationUI" {
+  user = aws_iam_user.SyncWeatherStationUI.name
+  policy_arn = aws_iam_policy.SyncWeatherStationUI.arn
+}
+
+resource "aws_iam_policy" "SyncWeatherStationUI" {
+  policy = jsonencode({
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Sid: "VisualEditor0",
+        Effect: "Allow",
+        Action: [
+          "s3:GetObject",
+          "s3:PutObject",
+          "s3:ListBucket"
+        ],
+        Resource: "*"
+      }
+    ]
+  })
+}
