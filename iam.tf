@@ -1,3 +1,30 @@
+# User for publishing sensor data
+resource "aws_iam_user" "WeatherStationPublish" {
+  name = "WeatherStationPublish"
+}
+
+resource "aws_iam_user_policy_attachment" "WeatherStationPublish" {
+  user = aws_iam_user.WeatherStationPublish.name
+  policy_arn = aws_iam_policy.WeatherStationPublish.arn
+}
+
+resource "aws_iam_policy" "WeatherStationPublish" {
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        Sid: "VisualEditor0",
+        Effect: "Allow",
+        Action: "sns:Publish",
+        Resource: [
+          aws_sns_topic.WeatherStation.arn,
+          aws_sns_topic.WeatherStationBattery.arn
+        ]
+      }
+    ]
+  })
+}
+
 # Role for writing SNS messages to DynamoDB using Lambda
 resource "aws_iam_role" "SnsToDynamoDB" {
   name = "SnsToDynamoDB"

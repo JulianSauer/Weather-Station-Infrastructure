@@ -87,11 +87,11 @@ resource "aws_api_gateway_deployment" "WeatherAPI" {
   stage_name = "api"
 }
 
-output "WeatherAPI" {
-  value = aws_api_gateway_deployment.WeatherAPI.invoke_url
+# Simple Notification Service
+resource "aws_sns_topic" "WeatherStationBattery"{
+  name = "WeatherStationBattery"
 }
 
-# Simple Notification Service
 resource "aws_sns_topic" "WeatherStation" {
   name = "WeatherStation"
 }
@@ -111,4 +111,16 @@ resource "aws_s3_bucket" "WeatherStationWebsite" {
     index_document = "index.html"
     error_document = "index.html"
   }
+}
+
+output "WeatherAPI" {
+  value = aws_api_gateway_deployment.WeatherAPI.invoke_url
+}
+
+output "WeatherStationTopic" {
+  value = aws_sns_topic.WeatherStation.arn
+}
+
+output "WeatherStationBatteryTopic" {
+  value = aws_sns_topic.WeatherStationBattery.arn
 }
