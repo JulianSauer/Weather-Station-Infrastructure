@@ -241,6 +241,11 @@ resource "aws_iam_role" "ForecastAPI" {
   })
 }
 
+resource "aws_iam_role_policy_attachment" "ForecastAPIPolicyAttach" {
+  role = aws_iam_role.ForecastAPI.name
+  policy_arn = data.aws_iam_policy.AWSLambdaBasicExecutionRole.arn
+}
+
 resource "aws_iam_role_policy_attachment" "ForecastAPILambdaS3Access" {
   role = aws_iam_role.ForecastAPI.name
   policy_arn = aws_iam_policy.LambdaS3Access.arn
