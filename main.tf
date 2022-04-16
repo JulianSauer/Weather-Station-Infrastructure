@@ -13,8 +13,8 @@ provider "aws" {
 }
 
 # Lambda
-data "aws_s3_bucket" "WeatherStationLambdaFunctions" {
-  bucket = "weather-station-lambda-functions"
+data "aws_s3_bucket" "WeatherStationBinaries" {
+  bucket = "weather-station-binaries"
 }
 
 output "WeatherAPI" {

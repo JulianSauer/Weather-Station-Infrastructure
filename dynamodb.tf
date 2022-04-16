@@ -20,7 +20,7 @@ resource "aws_dynamodb_table" "WeatherStation" {
 # Lambda
 resource "aws_lambda_function" "SnsToDynamoDB" {
   function_name = "SnsToDynamoDB"
-  s3_bucket = data.aws_s3_bucket.WeatherStationLambdaFunctions.bucket
+  s3_bucket = data.aws_s3_bucket.WeatherStationBinaries.bucket
   s3_key = "SnsToDynamoDB/function.zip"
   handler = "main"
   role = aws_iam_role.SnsToDynamoDB.arn

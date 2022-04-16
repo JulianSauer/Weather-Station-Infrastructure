@@ -36,7 +36,7 @@ resource "aws_iam_policy" "UploadToS3" {
   })
 }
 
-resource "aws_s3_bucket" "WeatherStationLambdaFunctions" {
-  bucket = "weather-station-lambda-functions"
+resource "aws_s3_bucket" "WeatherStationBinaries" {
+  bucket = "weather-station-binaries"
   acl    = "private"
 }

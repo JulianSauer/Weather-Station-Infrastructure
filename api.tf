@@ -1,7 +1,7 @@
 # Lambda
 resource "aws_lambda_function" "WeatherAPI" {
   function_name = "WeatherAPI"
-  s3_bucket = data.aws_s3_bucket.WeatherStationLambdaFunctions.bucket
+  s3_bucket = data.aws_s3_bucket.WeatherStationBinaries.bucket
   s3_key = "WeatherAPI/function.zip"
   handler = "main"
   role = aws_iam_role.WeatherAPI.arn
@@ -10,7 +10,7 @@ resource "aws_lambda_function" "WeatherAPI" {
 
 resource "aws_lambda_function" "ForecastAPI" {
   function_name = "ForecastAPI"
-  s3_bucket = data.aws_s3_bucket.WeatherStationLambdaFunctions.bucket
+  s3_bucket = data.aws_s3_bucket.WeatherStationBinaries.bucket
   s3_key = "WeatherAPI/forecast.zip"
   handler = "main"
   role = aws_iam_role.ForecastAPI.arn

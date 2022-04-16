@@ -166,7 +166,7 @@ resource "aws_iam_policy" "LambdaS3Access" {
         Effect: "Allow",
         Action: "s3:*",
         Resource: [
-          data.aws_s3_bucket.WeatherStationLambdaFunctions.arn
+          data.aws_s3_bucket.WeatherStationBinaries.arn
         ]
       }
     ]
@@ -189,7 +189,7 @@ data "aws_iam_policy_document" "WeatherStationUI" {
       type = "AWS"
     }
     resources = [
-      "arn:aws:s3:::weather.julian-sauer.com/*"
+      "arn:aws:s3:::wetter.julian-sauer.com/*"
     ]
   }
 }
