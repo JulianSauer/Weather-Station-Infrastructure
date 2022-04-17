@@ -17,6 +17,15 @@ resource "aws_lambda_function" "ForecastAPI" {
   runtime = "go1.x"
 }
 
+resource "aws_lambda_function" "DataMining" {
+  function_name = "DataMining"
+  s3_bucket = data.aws_s3_bucket.WeatherStationBinaries.bucket
+  s3_key = "WeatherAPI/datamining.zip"
+  handler = "main"
+  role = aws_iam_role.DataMiningRole.arn
+  runtime = "go1.x"
+}
+
 # Api Gateway
 resource "aws_api_gateway_rest_api" "WeatherAPI" {
   name = "WeatherAPI"

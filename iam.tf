@@ -264,3 +264,60 @@ resource "aws_iam_role_policy" "ForecastAPI" {
     ]
   })
 }
+
+# Allow data mining to access secrets and publish messages
+resource "aws_iam_role" "DataMiningRole" {
+  name = "DataMiningRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid = ""
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "DataMiningBasicExecution" {
+  role = aws_iam_role.DataMiningRole.name
+  policy_arn = data.aws_iam_policy.AWSLambdaBasicExecutionRole.arn
+}
+
+resource "aws_iam_role_policy_attachment" "DataMiningLambdaS3Access" {
+  role = aws_iam_role.DataMiningRole.name
+  policy_arn = aws_iam_policy.LambdaS3Access.arn
+}
+
+resource "aws_iam_role_policy_attachment" "DataMiningPublishToSns" {
+  role = aws_iam_role.DataMiningRole.name
+  policy_arn = aws_iam_policy.WeatherStationPublish.arn
+}
+
+resource "aws_iam_role_policy" "DataMiningSecretsManagerAccess" {
+  role = aws_iam_role.DataMiningRole.id
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+      {
+        Effect: "Allow",
+        Action: "secretsmanager:GetSecretValue",
+        Resource: aws_secretsmanager_secret.WeatherStation.arn
+      }
+    ]
+  })
+}
+
+# Allow CloudWatch/EventBus to trigger a lambda function
+resource "aws_lambda_permission" "allowTriggeringDataMining" {
+  statement_id = "AllowExecutionFromCloudWatch"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.DataMining.function_name
+  principal = "events.amazonaws.com"
+  source_arn = aws_cloudwatch_event_rule.dataMiningInterval.arn
+}
