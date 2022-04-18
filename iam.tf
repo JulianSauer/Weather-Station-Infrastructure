@@ -251,6 +251,23 @@ resource "aws_iam_role_policy_attachment" "ForecastAPILambdaS3Access" {
   policy_arn = aws_iam_policy.LambdaS3Access.arn
 }
 
+resource "aws_iam_role_policy" "ForecastAPIDynamoDBAccess" {
+  name = "ForecastAPIDynamoDBAccess"
+  role = aws_iam_role.ForecastAPI.id
+
+  policy = jsonencode({
+    Version: "2012-10-17",
+    Statement: [
+      {
+        Sid: "VisualEditor0",
+        Effect: "Allow",
+        Action: "dynamodb:Query",
+        Resource: aws_dynamodb_table.WeatherStation.arn
+      }
+    ]
+  })
+}
+
 resource "aws_iam_role_policy" "ForecastAPI" {
   role = aws_iam_role.ForecastAPI.id
   policy = jsonencode({
